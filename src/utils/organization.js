@@ -11,7 +11,7 @@ export const useGroups = (org_id) => {
     useEffect(() => {
         const fetchData = async () => {
             const response = await axios.get(`${BASE_URL}/orgs/${org_id}/groups`, {
-                headers: { "Authorization": `Bearer ${user["access_token"]}}` }
+                headers: { "Authorization": `Bearer ${user["access_token"]}` }
             });
             setData(response.data);
             setLoading(false)
@@ -35,7 +35,7 @@ export const useDevices = (org_id) => {
         
         const fetchData = async () => {
             const response = await axios.get(`${BASE_URL}/orgs/${org_id}/devices`, {
-                headers: { "Authorization": `Bearer ${user["access_token"]}}` }
+                headers: { "Authorization": `Bearer ${user["access_token"]}` }
             });
             setData(response.data);
             setLoading(false)

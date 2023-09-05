@@ -48,7 +48,7 @@ export default function Tag({ selected, reload_devices }) {
       const response = await fetch(`${BASE_URL}/orgs/${org_id}/devices/${selected[i].id}/tags`, {
         method: "DELETE",
         headers: {
-          "Authorization": `Bearer ${user["access_token"]}}`,
+          "Authorization": `Bearer ${user["access_token"]}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify([removeTagInput])

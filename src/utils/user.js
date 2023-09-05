@@ -14,6 +14,8 @@ export function useUser() {
             const users = await axios.get(`${BASE_URL}/users`, {
                 headers: { "Authorization": `Bearer ${user["access_token"]}` }
             });
+            console.log(users)
+            console.log(users.data)
             setUsers(users.data)
         }
         if (user) {

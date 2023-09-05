@@ -18,7 +18,7 @@ export default function BaseLayout({ children, group, activeView, setActiveView,
 
   const getOrganizations = async () => {
     const response = await axios.get(`${BASE_URL}/orgs`, {
-      headers: { "Authorization": `Bearer ${user["access_token"]}}` }
+      headers: { "Authorization": `Bearer ${user["access_token"]}` }
     });
     const data = response.data;
     setOrganization(data);

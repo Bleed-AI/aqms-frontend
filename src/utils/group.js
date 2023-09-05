@@ -13,7 +13,7 @@ export const useGroup = (org_id, group_id) => {
 
         const fetchData = async () => {
             const response = await axios.get(`${BASE_URL}/orgs/${org_id}/groups/${group_id}`, {
-                headers: { "Authorization": `Bearer ${user["access_token"]}}` }
+                headers: { "Authorization": `Bearer ${user["access_token"]}` }
             });
             setData(response.data);
             setLoading(false)
@@ -36,7 +36,7 @@ export const useGroupDevices = (org_id, group_id) => {
 
         const fetchData = async () => {
             const response = await axios.get(`${BASE_URL}/orgs/${org_id}/groups/${group_id}/devices`, {
-                headers: { "Authorization": `Bearer ${user["access_token"]}}` }
+                headers: { "Authorization": `Bearer ${user["access_token"]}` }
             });
             setData(response.data);
             setLoading(false)
@@ -46,6 +46,29 @@ export const useGroupDevices = (org_id, group_id) => {
             fetchData();
         }
     }, [org_id, user])
+
+    return [data, loading];
+}
+
+export const useRateFiles = () => {
+    const [data, setData] = useState();
+    const [loading, setLoading] = useState(true);
+    const { user } = useContext(UserContext);
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+            const response = await axios.get(`${BASE_URL}/ratelists`, {
+                headers: { "Authorization": `Bearer ${user["access_token"]}` }
+            });
+            setData(response.data);
+            setLoading(false)
+        };
+        if (user) {
+            setLoading(true)
+            fetchData();
+        }
+    }, [user])
 
     return [data, loading];
 }

@@ -43,6 +43,7 @@ export default function Login() {
       if (response.status === 200) {
         localStorage.setItem('user', JSON.stringify(response.data))
         navigate("/dashboard")
+        window.location.reload();
       }
     }
     catch {

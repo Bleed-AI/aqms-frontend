@@ -1,35 +1,54 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import RadioButton from "../Common/RadioButton";
 import ClickAwayListener from "react-click-away-listener";
 import "react-tagsinput/react-tagsinput.css";
 import { BASE_URL } from '../../config/constants';
 import { UserContext } from "../../context/UserContext/UserContext";
+import axios from "axios";
 
-export default function FileConfiguration({setShowModal}) {
+export default function FileConfiguration({ setShowModal }) {
   const [radioActive, setRadioActive] = useState(1);
   const [tags, setTags] = useState([]);
   const [fileName, setFileName] = useState("File");
+  const [config_time, setConfigTime] = useState("");
   const inputRef = useRef(null);
   const [showSchedule, setShowSchedule] = useState(false);
   const [valInput, setValInput] = useState("");
   const { user } = useContext(UserContext);
 
+
+  useEffect(() => {
+    console.log(config_time)
+  }, [config_time])
+
+
   const handleFileUpload = async () => {
 
+    const scheduled = radioActive === 2 ? true : false;
     const body = new FormData();
     body.append("file", inputRef.current.files[0]);
-    body.append("isScheduled", radioActive === 2 ? true : false);
-    body.append("config_time", "2023-02-23 12:00:00");
+    body.append("is_scheduled", scheduled);
+    if (scheduled && config_time !== "") {
+      const schedule_time = new Date(config_time).toISOString().slice(0, 19).replace('T', ' ');
+      body.append("config_time", schedule_time);
+    } else {
+      const immediate_time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      body.append("config_time", immediate_time);
+    }
+
+    if (tags.length > 0){
     body.append("tags", [...tags.map((tag) => tag.value)])
+    } else {
+
+    }
+
 
     try {
-      const response = await fetch(`${BASE_URL}/ratelists`, {
-        method: "POST",
+      const response = await axios.post(`${BASE_URL}/ratelists`, body, {
         headers: {
+          "Content-Type": "multipart/form-data",
           "Authorization": `Bearer ${user["access_token"]}`,
-          "Content-Type": "application/json"
         },
-        body: body
       });
 
       console.log(response);
@@ -134,14 +153,11 @@ export default function FileConfiguration({setShowModal}) {
               <ClickAwayListener onClickAway={handleClickAway}>
                 <div className="absolute z-10 mt-12">
                   <input
-                    type="date"
-                    value={"2023-02-23"}
-                    className="w-[92px] mt-2.5 ml-8 leading-6 text-xs text-[#9AA6AC]  focus:outline-none border pl-1.5 px-2 rounded-md border-[#DDE2E4]"
+                    type='datetime-local'
+                    className="w-[180px] mt-2.5 ml-8 leading-6 text-xs text-[#9AA6AC]  focus:outline-none border pl-1.5 px-2 rounded-md border-[#DDE2E4]"
+                    onChange={(e) => setConfigTime(e.target.value)}
                   />
-                  <input
-                    type="time"
-                    className=" w-[57px] mt-2.5 ml-2 leading-6 text-[#9AA6AC] focus:outline-none text-xs border pl-1 px-2 rounded-md border-[#DDE2E4]"
-                  />
+
                 </div>
               </ClickAwayListener>
             )}
@@ -177,11 +193,12 @@ export default function FileConfiguration({setShowModal}) {
           ))}
         </div>
         <div className="bg-[#D9D9D9] py-6 mt-12  bg-opacity-30">
-          <button className="bg-[#18A0FB] text-white text-center h-9 rounded-lg  px-8">
+          <button className="bg-[#18A0FB] text-white text-center h-9 rounded-lg  px-8"
+            onClick={handleFileUpload}>
             Save
           </button>
           <button className="bg-[#A8B6BF] ml-3 text-white text-center h-9 rounded-md  px-8"
-          onClick={()=>setShowModal(false)}>
+            onClick={() => setShowModal(false)}>
             Cancel
           </button>
         </div>
